@@ -1,0 +1,23 @@
+# Smithery configuration file: https://smithery.ai/docs/config#smitheryyaml
+
+startCommand:
+  type: stdio
+  configSchema:
+    # JSON Schema defining the configuration options for the MCP.
+    type: object
+    properties:
+      ignoreRobotsTxt:
+        type: boolean
+        default: false
+        description: Set to true to ignore websites' robots.txt rules.
+      userAgent:
+        type: string
+        default: ""
+        description: Custom user-agent string for HTTP requests. Leave empty for default.
+  commandFunction:
+    # A JS function that produces the CLI command based on the given config to start the MCP on stdio.
+    |-
+    (config) => { const args = ['-m', 'mcp_server_fetch']; if (config.ignoreRobotsTxt) { args.push('--ignore-robots-txt'); } if (config.userAgent && config.userAgent.trim().length > 0) { args.push('--user-agent=' + config.userAgent); } return { command: 'python', args: args }; }
+  exampleConfig:
+    ignoreRobotsTxt: true
+    userAgent: MyCustomAgent/1.0
